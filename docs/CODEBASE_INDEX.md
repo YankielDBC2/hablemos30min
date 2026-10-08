@@ -29,6 +29,8 @@ Admin: sesión HttpOnly, protección origen, disponibilidad, reservas, comunicac
 
 Producción: https://hablemos30min.online, proyecto Vercel `hablemos30min` dentro del equipo `telegram-bots-projects-871f5ac8`. Neon independiente. Cron cada cinco minutos. Consulta `OPERATIONS.md` y `VERIFICATION.md` para operación y límites de las pruebas.
 
+Repositorio público: https://github.com/YankielDBC2/hablemos30min, licencia MIT y rama `main`. El repositorio está conectado al proyecto existente de Vercel; los cambios en `main` se publican mediante la integración Git. Credenciales y recibos continúan excluidos de Git.
+
 Rendimiento y SEO: `PERFORMANCE.md`, `SEO.md` y `SEO_RELEASE.md`. El render de la agenda agrupa horarios por fecha con un formateador compartido y memoización, invalidando por datos y zona. Imagen social e iconos: `ASSET_MANIFEST.md`. Search Console tiene la propiedad del dominio verificada por TXT y sitemap público leído; solicitudes aceptadas no equivalen a inclusión inmediata en Google.
 
 ## SEO

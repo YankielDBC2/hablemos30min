@@ -26,6 +26,8 @@ Cola persistente con leases y hasta6intentos, estados visibles en Comunicaciones
 Contraseña cifrada con scrypt, sesión HttpOnly/Secure/SameSiteStrict, límites de intentos y comprobación de origen. Caduca8horas. Admin muestra clientes, datos de llamada, estados de pago, notas, correo, auditoría y exportación CSV. Accesos en `.private/ACCESOS.md`; no compartir ese archivo.
 
 ## Despliegue
+Repositorio público MIT: https://github.com/YankielDBC2/hablemos30min. La integración Git de Vercel está conectada a la rama `main` de ese repositorio, dentro del proyecto existente en Telegram Bot's projects. Un push a `main` inicia el despliegue de producción. No crear un segundo proyecto Vercel ni subir variables de entorno a GitHub.
+
 La sesión actual CLI está autorizada. Eliminar únicamente `VERCEL_TOKEN` del proceso si una variable antigua interfiere; no modificar variables globales de Windows.
 
 ```powershell
