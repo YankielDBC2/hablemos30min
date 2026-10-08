@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f7f2">
+  <meta name="description" content="Una consulta 1 a 1 con Yankiel para avanzar con tu proyecto de IA, website, app o diseño. 30 minutos. $49 USD.">
+  <title>Yankiel — Tu idea, un siguiente paso.</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <div class="page-grain" aria-hidden="true"></div>
+  <header class="site-header wrap">
+    <a class="brand" href="#" aria-label="Yankiel, inicio"><span class="brand-mark" aria-hidden="true">y<span>.</span></span><span class="brand-name">yankiel<span>CONSULTAS DIGITALES</span></span></a>
+    <nav aria-label="Navegación principal"><a class="nav-text" href="#como-funciona">Cómo funciona</a><a class="nav-book" href="#reservar">Hablemos <span aria-hidden="true">↗</span></a></nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> UNA CONSULTA. UN SIGUIENTE PASO.</p>
+        <h1 id="hero-title">Tu idea.<br>Mi experiencia.<br><span>Un plan claro.</span><svg class="title-spark" width="54" height="56" viewBox="0 0 54 56" fill="none" aria-hidden="true"><path d="M27 1v16M27 39v16M1 28h16M37 28h16M8.5 9.5l11 11M34.5 35.5l11 11M8.5 46.5l11-11M34.5 20.5l11-11" stroke="currentColor" stroke-width="3"/></svg></h1>
+        <p class="hero-description">Hablemos de eso que quieres crear.<br>30 minutos para resolver dudas y encontrar<br class="desktop-break"> el camino para tu próximo proyecto.</p>
+        <div class="topic-chips" aria-label="Elige un tema para tu consulta">
+          <button type="button" data-topic="Inteligencia artificial"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 1.8 5.8L18 10l-6.2 2.2L10 18l-1.8-5.8L2 10l6.2-2.2L10 2Z"/></svg>Inteligencia artificial</button>
+          <button type="button" data-topic="Websites"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c-4 4-4 10 0 14 4-4 4-10 0-14Z"/></svg>Websites</button>
+          <button type="button" data-topic="Apps"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="2" width="10" height="16" rx="2"/><path d="M8 15h4"/></svg>Apps</button>
+          <button type="button" data-topic="Desarrollo"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 5-4 5 4 5M14 5l4 5-4 5m-3-13-2 16"/></svg>Desarrollo</button>
+          <button type="button" data-topic="Diseño"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 13 9-9 3 3-9 9-5 2 2-5ZM11 6l3 3"/></svg>Diseño</button>
+        </div>
+        <div class="hero-action"><a class="button primary" href="#reservar">Reservar mi consulta <span aria-hidden="true">↗</span></a><div class="hero-price"><strong>$49 <span>USD</span></strong><span>30 minutos · 1 a 1</span></div></div>
+        <div class="host-signature"><span class="mini-avatar" aria-hidden="true">YB</span><div><strong>Yankiel D. Beltrán Cabrera</strong><span>Tu idea, directamente conmigo.</span></div><svg class="signature-arrow" viewBox="0 0 85 32" fill="none" aria-hidden="true"><path d="M3 5c22 23 45 22 75 10m-17-5 19 4-10 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+
+      <div class="booking-area" id="reservar">
+        <div class="booking-overline"><span>UN ESPACIO PARA TU PROYECTO</span><span class="preview-badge">Vista previa</span></div>
+        <section class="booking-card" aria-label="Reserva una consulta de 30 minutos">
+          <div class="booking-header"><div class="session-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="3"/><path d="m16 10 5-3v10l-5-3"/></svg></div><div><h2>Hablemos de tu proyecto</h2><p>Consulta online con Yankiel</p></div><span class="session-price">$49<span>USD</span></span></div>
+          <div class="session-meta"><span><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/></svg>30 minutos</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="5" width="11" height="10" rx="2"/><path d="m13 8 5-3v10l-5-3"/></svg>Videollamada</span><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h14v9H8l-4 3v-3H3V4Z"/></svg>Español</span></div>
+          <div class="booking-body">
+            <ol class="steps" aria-label="Pasos de la reserva"><li class="active" data-step="1"><span>1</span>Horario</li><li data-step="2"><span>2</span>Tus datos</li><li data-step="3"><span>3</span>Resumen</li></ol>
+            <div id="step-1" class="step-panel">
+              <div class="panel-heading"><h3>Elige tu momento.</h3><span class="sample-label">Horarios de muestra</span></div>
+              <div class="scheduler"><div class="calendar"><div class="month-nav"><h4 id="month-label"></h4><div><button class="icon-button" id="previous-month" aria-label="Mes anterior"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><button class="icon-button" id="next-month" aria-label="Mes siguiente"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button></div></div><div class="weekdays" aria-hidden="true"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div id="calendar-grid" class="calendar-grid" role="group" aria-label="Fechas de la consulta"></div><div class="calendar-key"><span aria-hidden="true"></span>Selecciona un día</div></div><div class="time-picker"><p id="selected-day" class="selected-day" aria-live="polite"></p><div id="time-slots" class="time-slots" role="group" aria-label="Horarios de muestra"></div><p class="time-duration">Sesiones de 30 min</p></div></div>
+              <label class="timezone-label" for="timezone"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c-4 4-4 10 0 14 4-4 4-10 0-14Z"/></svg><select id="timezone" aria-label="Zona horaria"><option value="America/New_York">Miami · Hora del Este</option><option value="America/Mexico_City">Ciudad de México</option><option value="America/Bogota">Bogotá</option><option value="America/Los_Angeles">Los Ángeles · Hora del Pacífico</option><option value="Europe/Madrid">Madrid</option></select></label>
+              <div class="booking-bottom"><p id="selection-hint" aria-live="polite">Un pequeño espacio.<br><strong>Una nueva perspectiva.</strong></p><button class="button primary continue-button" id="continue-details" disabled>Continuar <span aria-hidden="true">→</span></button></div>
+            </div>
+            <div id="step-2" class="step-panel" hidden>
+              <button class="back-link" type="button" data-back="1">← Cambiar horario</button><div class="panel-heading"><h3>Cuéntame sobre ti.</h3></div><div class="selected-summary" id="details-summary"></div>
+              <form id="details-form">
+                <div class="field"><label for="full-name">Tu nombre <span>*</span></label><input id="full-name" name="name" autocomplete="name" placeholder="¿Cómo te llamas?" required maxlength="100"></div>
+                <div class="field"><label for="email">Email <span>*</span></label><input id="email" name="email" type="email" autocomplete="email" placeholder="tu@email.com" required maxlength="254"></div>
+                <div class="field"><label for="topic">¿De qué hablamos? <span>*</span></label><select id="topic" name="topic" required><option value="">Selecciona un tema</option><option>Inteligencia artificial</option><option>Websites</option><option>Apps</option><option>Desarrollo</option><option>Diseño</option><option>Un poco de todo</option></select></div>
+                <div class="field"><label for="project-notes">Tu idea en pocas palabras <span class="optional">opcional</span></label><textarea id="project-notes" name="notes" rows="2" placeholder="Tengo una idea para una app y quiero saber por dónde empezar…" maxlength="1200"></textarea></div>
+                <button class="button primary full-width" type="submit">Revisar mi consulta <span aria-hidden="true">→</span></button><p class="privacy-note">En esta vista previa, tus datos permanecen en este navegador.</p>
+              </form>
+            </div>
+            <div id="step-3" class="step-panel" hidden>
+              <button class="back-link" type="button" data-back="2">← Editar mis datos</button><div class="panel-heading"><h3>Tu próximo paso.</h3></div><p class="review-intro">Todo listo para revisar tu consulta.</p><dl class="review-list" id="review-list"></dl><div class="total-row"><div>Total de la consulta<span>Una sesión · 30 minutos</span></div><strong>$49 <span>USD</span></strong></div><button class="button primary full-width" id="checkout-button">Continuar al pago <span aria-hidden="true">↗</span></button><p class="privacy-note">Vista previa: todavía no se realizan reservas ni cobros.</p>
+            </div>
+          </div>
+          <div class="booking-footer"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 4 5v5c0 4 6 7 6 7s6-3 6-7V5l-6-3Z"/><path d="m7 9 2 2 4-4"/></svg>Tu tiempo es valioso. Hagamos que cuente.</div>
+        </section>
+        <div class="card-caption"><span>Menos vueltas. Más claridad.</span><span aria-hidden="true">↳ 30 min, solo para tu idea.</span></div>
+      </div>
+    </section>
+
+    <section class="how-section" id="como-funciona" aria-labelledby="how-title"><div class="section-intro"><p class="eyebrow">SIMPLE, DE PRINCIPIO A FIN</p><h2 id="how-title">Llegas con una idea.<br>Sales con dirección.</h2></div><div class="how-steps"><article><span class="step-number">01 /</span><h3>Elige tu horario.</h3><p>Encuentra un momento para parar,<br class="desktop-break"> pensar y hablar de tu proyecto.</p></article><article><span class="step-number">02 /</span><h3>Pongamos todo en orden.</h3><p>Revisamos tu idea, tus dudas y<br class="desktop-break"> las opciones que tienen sentido.</p></article><article><span class="step-number">03 /</span><h3>Da el siguiente paso.</h3><p>Define qué priorizar y cómo<br class="desktop-break"> empezar a hacerlo realidad.</p></article></div></section>
+    <section class="faq-section" aria-labelledby="faq-title"><div><p class="eyebrow">ANTES DE HABLAR</p><h2 id="faq-title">Por si te lo<br>estabas preguntando.</h2><a class="text-cta" href="#reservar">Vamos a tu idea <span aria-hidden="true">↗</span></a></div><div class="faq-list"><details><summary>¿Qué podemos ver en 30 minutos?<span aria-hidden="true">+</span></summary><p>Una duda concreta, una idea de website o app, cómo incorporar IA a tu negocio o una decisión de desarrollo y diseño. Para aprovechar la sesión, elige una prioridad y trae el contexto que ya tengas.</p></details><details><summary>¿Necesito saber de tecnología?<span aria-hidden="true">+</span></summary><p>No. Puedes venir con una idea inicial o con un proyecto en marcha. La conversación se adapta a tu punto de partida y usamos un lenguaje claro.</p></details><details><summary>¿La consulta incluye desarrollar mi proyecto?<span aria-hidden="true">+</span></summary><p>Los $49 corresponden a una consulta de 30 minutos para revisar tu proyecto y orientar los siguientes pasos. La implementación de un website, app o diseño se evalúa por separado.</p></details><details><summary>¿Cómo nos reunimos?<span aria-hidden="true">+</span></summary><p>La consulta es online, por videollamada. Al activar las reservas, el enlace de la reunión se incluirá en la confirmación de tu cita.</p></details></div></section>
+  </main>
+  <footer class="site-footer wrap"><a class="footer-brand" href="#">yankiel<span>.</span></a><p>Una buena idea merece una buena conversación.</p><span>© <span id="copyright-year">2026</span> · Miami, FL</span></footer>
+  <dialog id="checkout-dialog" class="checkout-dialog" aria-labelledby="checkout-title"><button class="dialog-close icon-button" id="close-dialog" aria-label="Cerrar vista previa del pago">✕</button><div class="checkout-emblem" aria-hidden="true">↗</div><p class="eyebrow">VISTA PREVIA DEL PAGO</p><h2 id="checkout-title">30 minutos.<br>Tu siguiente paso.</h2><div class="checkout-amount">$49<span>USD</span></div><p>Este es el diseño del flujo de reserva. Los horarios son ejemplos y el pago todavía no está conectado.</p><p class="dialog-small">No se ha reservado ninguna cita, enviado ningún dato ni realizado ningún cobro.</p><button class="button primary full-width" id="return-to-review">Volver a mi consulta <span aria-hidden="true">←</span></button></dialog>
+  <noscript><div class="noscript">Activa JavaScript para probar el calendario. Consulta online: 30 minutos por $49 USD.</div></noscript>
+</body>
+</html>

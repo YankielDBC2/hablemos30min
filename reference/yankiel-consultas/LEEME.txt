@@ -1,0 +1,36 @@
+YANKIEL — LANDING DE CONSULTAS
+
+Consulta de 30 minutos por $49 USD.
+
+INICIAR EN TU COMPUTADORA
+1. Descomprime este ZIP.
+2. Abre una terminal dentro de la carpeta yankiel-consultas.
+3. Con Python instalado, ejecuta:
+   python3 -m http.server 3000 --directory dist
+   En Windows también puedes usar:
+   py -m http.server 3000 --directory dist
+4. Abre http://localhost:3000 en Chrome.
+5. Para detener el servidor, pulsa Ctrl+C en la terminal.
+
+Usa un servidor local: abrir index.html directamente no permite cargar los módulos JavaScript correctamente en todos los navegadores.
+
+ARCHIVOS
+- dist/index.html: estructura y textos.
+- dist/styles.css: diseño y adaptación móvil.
+- dist/app.mjs: interacción, formulario y flujo de reserva.
+- dist/calendar.mjs: calendario y conversión de zonas horarias.
+- dist/favicon.svg: icono de la marca.
+- tests/calendar.test.mjs: pruebas del calendario.
+- README.md: documentación técnica y conexión de reservas reales.
+- .openai/hosting.json: configuración del sitio original en Sites.
+
+No se necesitan npm, dependencias ni una compilación. Para un hosting estático, publica el contenido de dist. La configuración .openai corresponde al sitio original; no es necesaria para alojarlo en otro servicio.
+
+ESTADO DE LAS RESERVAS
+La agenda y el pago son demostrativos. No se confirman citas ni se realizan cobros. Hay que conectar la disponibilidad real y el pago antes de aceptar reservas.
+Los datos del formulario permanecen en memoria del navegador.
+
+PRUEBAS (OPCIONAL, CON NODE.JS)
+node --test tests/calendar.test.mjs
+
+El ZIP contiene el código de la versión publicada, sin historial Git, credenciales ni archivos temporales.

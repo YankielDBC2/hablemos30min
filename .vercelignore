@@ -1,0 +1,9 @@
+.private
+.env*
+reference
+output
+.git
+node_modules
+tests
+docs
+scripts
