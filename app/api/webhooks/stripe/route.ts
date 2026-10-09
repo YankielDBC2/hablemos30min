@@ -1,4 +1,4 @@
-import { stripeClient } from '@/lib/stripe';
+import { stripeClient,isHablemosCheckout } from '@/lib/stripe';
 import { fulfillCheckout,processNotifications,expireCheckout } from '@/lib/services';
 import { json,handleError } from '@/lib/http';
 export const runtime='nodejs';
@@ -10,11 +10,11 @@ export async function POST(request:Request){
  let event;
  try{event=stripeClient().webhooks.constructEvent(text,signature,process.env.STRIPE_WEBHOOK_SECRET);}catch{return json({error:'Firma inválida.'},400);}
  try{
-  if(event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded'){
+  if((event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded') && isHablemosCheckout(event.data.object)){
    await fulfillCheckout(event.data.object.id);
    await processNotifications();
   }
-  if(event.type==='checkout.session.expired') await expireCheckout(event.data.object.id);
+  if(event.type==='checkout.session.expired' && isHablemosCheckout(event.data.object)) await expireCheckout(event.data.object.id);
   return json({received:true});
  }catch(e){return handleError(e);}
 }

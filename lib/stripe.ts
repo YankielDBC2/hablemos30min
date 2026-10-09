@@ -24,3 +24,9 @@ export async function createStripeSession(booking:Booking) {
 export function verifyPaidSession(session:Stripe.Checkout.Session,booking:Booking):boolean {
  return session.mode==="payment" && session.status==="complete" && session.payment_status==="paid" && session.amount_total===PRICE_CENTS && session.currency==="usd" && session.metadata?.bookingId===booking.id && session.client_reference_id===booking.id && session.metadata?.policy==="no-refunds-v1" && session.metadata?.duration==="30" && (!booking.stripeSessionId || booking.stripeSessionId===session.id);
 }
+export function isHablemosCheckout(session:Stripe.Checkout.Session):boolean {
+ const id=session.metadata?.bookingId;
+ return session.mode==='payment' && session.amount_total===PRICE_CENTS && session.currency==='usd' && typeof id==='string'
+  && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+  && session.client_reference_id===id && session.metadata?.policy==='no-refunds-v1' && session.metadata?.duration===String(DURATION_MINUTES);
+}

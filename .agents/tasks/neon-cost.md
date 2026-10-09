@@ -6,4 +6,4 @@ Plan: retirar cron y proteger la ruta antigua; cachear una única agenda persist
 
 Los datos y credenciales de migración permanecen en `.private/`. La ausencia de cron implica que los recordatorios por correo no son autónomos; el ICS incluye alarmas y los correos pendientes se procesan al entrar al admin o confirmar pagos.
 
-Completado: nueva cuenta Free, copia verificada de las cinco tablas, conexión de producción actualizada, cinco reservas visibles, cron 410 y cinco consultas públicas sin despertar Neon. Mailnova y el proyecto antiguo retirados; EasyPrintMiami intacto. Typecheck, build y 13 pruebas pasan; integración PostgreSQL opcional omitida. Respaldos y evidencia en `.private/`.
+Completado: nueva cuenta Free, copia verificada de las cinco tablas, conexión de producción actualizada, cinco reservas visibles, cron 410 y cinco consultas públicas sin despertar Neon. Mailnova y el proyecto antiguo retirados; EasyPrintMiami intacto. Typecheck, build y 14 pruebas pasan; integración PostgreSQL opcional omitida. Respaldos y evidencia en `.private/`.

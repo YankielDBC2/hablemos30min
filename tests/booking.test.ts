@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import type Stripe from "stripe";
 import { checkoutSchema,DEFAULT_SETTINGS,settingsSchema } from "../lib/validation";
 import { generateSlots,isBookableStart,localToUtc,overlaps } from "../lib/scheduling";
-import { verifyPaidSession } from "../lib/stripe";
+import { verifyPaidSession,isHablemosCheckout } from "../lib/stripe";
 import { bookingIcs,escapeIcs } from "../lib/mail";
 import type { Booking } from "../lib/repository";
 import { fulfillPayment,expireUnpaidCheckout,type PaymentPorts,type ExpirationPorts } from "../lib/payment-service";
@@ -11,6 +11,14 @@ import { fulfillPayment,expireUnpaidCheckout,type PaymentPorts,type ExpirationPo
 const settings={...DEFAULT_SETTINGS,bookingEnabled:true,meetingType:"phone" as const,adminEmail:"anfitrion@example.com"};
 const booking:Booking={id:"9b10a9a6-18f5-4664-ade0-90129ac1dd19",idempotencyKey:"7e862a20-fc5c-4020-9268-1168b9c6d8d0",payloadHash:"hash",customerName:"Cliente",email:"cliente@example.com",phone:"+1 305 555 0100",topic:"Consulta",notes:"",adminNotes:"",startAt:"2026-11-02T14:00:00Z",endAt:"2026-11-02T14:30:00Z",blockedUntil:"2026-11-02T14:30:00Z",timezone:"America/New_York",meetingType:"phone",meetingUrl:"",hostName:"Yankiel",adminEmail:"anfitrion@example.com",status:"held",paymentStatus:"unpaid",priceCents:4900,currency:"usd",stripeSessionId:"cs_test_example",holdExpiresAt:"2026-10-05T22:00:00Z",createdAt:"2026-10-05T21:00:00Z",paidAt:null};
 const paid={id:"cs_test_example",mode:"payment",status:"complete",payment_status:"paid",amount_total:4900,currency:"usd",metadata:{bookingId:booking.id,policy:"no-refunds-v1",duration:"30"},client_reference_id:booking.id} as unknown as Stripe.Checkout.Session;
+
+test('Eventos Stripe de otros productos se ignoran antes de consultar Neon',()=>{
+ assert.equal(isHablemosCheckout(paid),true);
+ assert.equal(isHablemosCheckout({...paid,status:'expired',payment_status:'unpaid'} as Stripe.Checkout.Session),true);
+ for(const patch of [{metadata:{}},{client_reference_id:'otro'},{amount_total:1000},{mode:'subscription'},{metadata:{bookingId:'no-uuid',policy:'no-refunds-v1',duration:'30'}}]){
+  assert.equal(isHablemosCheckout({...paid,...patch} as Stripe.Checkout.Session),false);
+ }
+});
 
 test('Solo Stripe expirado y sin pagar libera un hold propio; no hay conciliación periódica',async()=>{
  let expired=0;

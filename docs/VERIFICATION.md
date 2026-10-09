@@ -6,7 +6,7 @@ Hablemos30min migrado al proyecto `calm-shape-51914969` en la organización grat
 
 El cron ya no está registrado y su ruta responde 410 sin consultar la base. Login y datos administrativos responden 200 con las cinco reservas. Después de inicializar la agenda, se suspendió Neon y se realizaron cinco solicitudes públicas con dos meses y tres zonas horarias: todas respondieron 200, con 49 USD y 30 minutos, y el endpoint permaneció `idle`.
 
-Typecheck y build correctos; 13 pruebas unitarias pasan y una prueba opcional PostgreSQL se omite. Nuevas pruebas cubren horarios calculados fuera de la caché, bloques, zonas, mantenimiento sin acceso a la base, ausencia de cron, expiración Stripe verificada y dos alarmas ICS. No se hicieron cobros reales. Los recordatorios por correo requieren una acción administrativa o un pago para procesarse; los avisos autónomos son los del calendario importado por el cliente.
+Typecheck y build correctos; 14 pruebas unitarias pasan y una prueba opcional PostgreSQL se omite. Nuevas pruebas cubren horarios calculados fuera de la caché, bloques, zonas, mantenimiento sin acceso a la base, ausencia de cron, expiración Stripe verificada, eventos de otros productos ignorados sin consultar Neon y dos alarmas ICS. No se hicieron cobros reales. Los recordatorios por correo requieren una acción administrativa o un pago para procesarse; los avisos autónomos son los del calendario importado por el cliente.
 
 La caché persistente no expira por visitas; una lectura inicial es necesaria si está vacía o desalojada. El checkout sigue verificando reglas, idempotencia y exclusión en PostgreSQL.
 
