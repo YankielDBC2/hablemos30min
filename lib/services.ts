@@ -1,22 +1,15 @@
 import { createHash } from "node:crypto";
 import { AppError } from "./errors";
 import * as repository from "./repository";
-import { checkoutSchema, timezoneSchema, DURATION_MINUTES, PRICE_CENTS, type CheckoutInput } from "./validation";
-import { generateSlots, isBookableStart, overlaps } from "./scheduling";
+import { checkoutSchema, type CheckoutInput } from "./validation";
+import { isBookableStart } from "./scheduling";
 import { createStripeSession, stripeClient } from "./stripe";
-import { fulfillPayment } from "./payment-service";
+import { fulfillPayment, expireUnpaidCheckout } from "./payment-service";
 import { sendBookingNotification } from "./mail";
+import { publicAvailability, refreshPublicAgenda } from './public-agenda';
 
 export async function getAvailability(month:string,timezone:string) {
- if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||!timezoneSchema.safeParse(timezone).success) throw new AppError("Mes o zona horaria inválidos");
- const settings=await repository.getSettings();
- const publicSettings={hostName:settings.hostName,timezone:settings.timezone,meetingType:settings.meetingType,meetingUrl:settings.meetingUrl,bookingEnabled:settings.bookingEnabled,callChannels:["phone","whatsapp"].includes(settings.meetingType)?["whatsapp","phone"]:[]};
- if(!settings.bookingEnabled) return {slots:[] as string[],settings:publicSettings,price:PRICE_CENTS,duration:DURATION_MINUTES};
- const generated=generateSlots(month,timezone,settings);
- if(!generated.length) return {slots:generated,settings:publicSettings,price:PRICE_CENTS,duration:DURATION_MINUTES};
- const blocks=await repository.blockedSlots(generated[0],new Date(Date.parse(generated.at(-1)!)+1800000+settings.bufferMinutes*60000).toISOString());
- const slots=generated.filter((start)=>!blocks.some((block)=>overlaps(start,new Date(Date.parse(start)+1800000+settings.bufferMinutes*60000).toISOString(),block.startAt,block.blockedUntil)));
- return {slots,settings:publicSettings,price:PRICE_CENTS,duration:DURATION_MINUTES};
+ return publicAvailability(month,timezone);
 }
 export async function createCheckout(raw:CheckoutInput,ip:string):Promise<{url:string}> {
  const input=checkoutSchema.parse(raw);
@@ -30,6 +23,7 @@ export async function createCheckout(raw:CheckoutInput,ip:string):Promise<{url:s
  if(!booking) {
   if(!isBookableStart(new Date(input.startAt),settings)) throw new AppError("El horario seleccionado ya no está disponible",409,"INVALID_SLOT");
   booking=await repository.createHold(input,hash,settings,new Date(Date.now()+32*60000));
+  await refreshPublicAgenda();
   if(booking.payloadHash!==hash) throw new AppError("La solicitud cambió. Actualiza la página.",409,"IDEMPOTENCY_MISMATCH");
  }
  if(booking.status!=="held") throw new AppError("Esta solicitud ya fue procesada. Consulta tu correo o selecciona otro horario.",409,"BOOKING_PROCESSED");
@@ -53,15 +47,21 @@ export async function getBooking(sessionId:string) {
  return {status:booking.status,booking:{id:booking.id,name:booking.customerName,startAt:booking.startAt,endAt:booking.endAt,timezone:booking.timezone,meetingType:booking.meetingType,meetingUrl:booking.meetingUrl,phone:booking.phone}};
 }
 async function releaseExpiredHolds(deadline:number) {
+ let changed=false;
  for(const booking of await repository.listExpiredHolds()) {
   if(Date.now()>deadline) break;
   try {
    const session=booking.stripeSessionId?await stripeClient().checkout.sessions.retrieve(booking.stripeSessionId):await createStripeSession(booking);
    if(!booking.stripeSessionId) await repository.attachSession(booking.id,session.id,session.expires_at);
    if(session.payment_status==="paid") await fulfillCheckout(session.id);
-   else if(session.status==="expired" && session.payment_status==="unpaid") await repository.expireVerifiedHold(booking.id);
+   else if(session.status==="expired" && session.payment_status==="unpaid") {await repository.expireVerifiedHold(booking.id);changed=true;}
   } catch(error) {console.error("hold_reconciliation_failed",{bookingId:booking.id,code:error instanceof AppError?error.code:"STRIPE_UNAVAILABLE"});}
  }
+ if(changed) await refreshPublicAgenda();
+}
+export async function expireCheckout(sessionId:string) {
+ const changed=await expireUnpaidCheckout(sessionId,{retrieve:(id)=>stripeClient().checkout.sessions.retrieve(id),findBySession:repository.findBySession,expireVerifiedHold:repository.expireVerifiedHold});
+ if(changed) await refreshPublicAgenda();
 }
 export async function processNotifications() {
  const began=Date.now();

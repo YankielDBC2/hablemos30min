@@ -6,11 +6,28 @@ import { generateSlots,isBookableStart,localToUtc,overlaps } from "../lib/schedu
 import { verifyPaidSession } from "../lib/stripe";
 import { bookingIcs,escapeIcs } from "../lib/mail";
 import type { Booking } from "../lib/repository";
-import { fulfillPayment,type PaymentPorts } from "../lib/payment-service";
+import { fulfillPayment,expireUnpaidCheckout,type PaymentPorts,type ExpirationPorts } from "../lib/payment-service";
 
 const settings={...DEFAULT_SETTINGS,bookingEnabled:true,meetingType:"phone" as const,adminEmail:"anfitrion@example.com"};
 const booking:Booking={id:"9b10a9a6-18f5-4664-ade0-90129ac1dd19",idempotencyKey:"7e862a20-fc5c-4020-9268-1168b9c6d8d0",payloadHash:"hash",customerName:"Cliente",email:"cliente@example.com",phone:"+1 305 555 0100",topic:"Consulta",notes:"",adminNotes:"",startAt:"2026-11-02T14:00:00Z",endAt:"2026-11-02T14:30:00Z",blockedUntil:"2026-11-02T14:30:00Z",timezone:"America/New_York",meetingType:"phone",meetingUrl:"",hostName:"Yankiel",adminEmail:"anfitrion@example.com",status:"held",paymentStatus:"unpaid",priceCents:4900,currency:"usd",stripeSessionId:"cs_test_example",holdExpiresAt:"2026-10-05T22:00:00Z",createdAt:"2026-10-05T21:00:00Z",paidAt:null};
 const paid={id:"cs_test_example",mode:"payment",status:"complete",payment_status:"paid",amount_total:4900,currency:"usd",metadata:{bookingId:booking.id,policy:"no-refunds-v1",duration:"30"},client_reference_id:booking.id} as unknown as Stripe.Checkout.Session;
+
+test('Solo Stripe expirado y sin pagar libera un hold propio; no hay conciliación periódica',async()=>{
+ let expired=0;
+ const ports:ExpirationPorts={retrieve:async()=>({...paid,status:'expired',payment_status:'unpaid'} as Stripe.Checkout.Session),findBySession:async()=>booking,expireVerifiedHold:async(id)=>{assert.equal(id,booking.id);expired++;}};
+ assert.equal(await expireUnpaidCheckout(paid.id,ports),true);
+ assert.equal(expired,1);
+ ports.retrieve=async()=>paid;
+ assert.equal(await expireUnpaidCheckout(paid.id,ports),false);
+ ports.retrieve=async()=>({...paid,status:'open',payment_status:'unpaid'} as Stripe.Checkout.Session);
+ assert.equal(await expireUnpaidCheckout(paid.id,ports),false);
+ ports.retrieve=async()=>({...paid,status:'expired',payment_status:'unpaid'} as Stripe.Checkout.Session);
+ ports.findBySession=async()=>({...booking,paymentStatus:'paid',status:'confirmed'});
+ assert.equal(await expireUnpaidCheckout(paid.id,ports),false);
+ ports.findBySession=async()=>({...booking,stripeSessionId:'cs_test_other'});
+ assert.equal(await expireUnpaidCheckout(paid.id,ports),false);
+ assert.equal(expired,1);
+});
 
 test("Se exige celular, política aceptada y UUID; no se acepta alterar precio",()=>{
  const valid={name:"Ana Pérez",email:"ana@example.com",phone:"+1 305 555 0100",topic:"Proyecto",notes:"",startAt:"2026-11-02T14:00:00Z",timezone:"America/New_York",acceptedPolicy:true,idempotencyKey:booking.idempotencyKey};
@@ -56,6 +73,9 @@ test("ICS no permite inyección y preserva caracteres y hora UTC",()=>{
  assert.equal(file.split("\r\n").filter((line)=>line==="BEGIN:VEVENT").length,1);
  assert.ok(file.includes("Yankiel\\nBEGIN:VEVENT\\;secreto\\,otro"));
  assert.ok(file.includes("DTSTART:20261102T140000Z"));
+ assert.equal(file.split("\r\n").filter(line=>line==='BEGIN:VALARM').length,2);
+ assert.ok(file.includes('TRIGGER:-P1D'));
+ assert.ok(file.includes('TRIGGER:-PT1H'));
  assert.equal(escapeIcs("a\\b\r\nc,d;e"),"a\\\\b\\nc\\,d\\;e");
  for(const line of file.split("\r\n")) assert.ok(Buffer.byteLength(line)<=74);
 });

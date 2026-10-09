@@ -7,7 +7,7 @@ const origin='https://hablemos30min.online';
 const report=[];
 async function check(label,path,options={},expected=200){const r=await fetch(origin+path,options);const data=await r.json().catch(()=>null);report.push({label,status:r.status,pass:r.status===expected});console.log(label,r.status);if(r.status!==expected)throw new Error(label+' failed');return {r,data};}
 await check('Admin protected','/api/admin/data',{},401);
-await check('Cron protected','/api/cron',{},401);
+await check('Periodic scheduler disabled','/api/cron',{},410);
 await check('Webhook rejects signature','/api/webhooks/stripe',{method:'POST',body:'{}'},400);
 await check('Cross-origin rejected','/api/admin/login',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:'{"password":"x"}'},403);
 const {r:login}=await check('Admin login','/api/admin/login',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({password:access.password})});
@@ -19,7 +19,7 @@ const date=new Date();const m=new Intl.DateTimeFormat('en-CA',{timeZone:'America
 const {data:agenda}=await check('Public availability',`/api/availability?month=${monthKey}&timezone=America%2FNew_York`);
 console.log('Available slots',agenda.slots.length);
 await check('Invalid price cannot checkout','/api/checkout',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({price:1})},400);
-await check('Scheduler authenticated','/api/cron',{headers:{Authorization:'Bearer '+env.CRON_SECRET}});
+await check('Scheduler remains disabled','/api/cron',{headers:{Authorization:'Bearer '+env.CRON_SECRET}},410);
 const transport=nodemailer.createTransport({host:env.SMTP_HOST,port:465,secure:true,auth:{user:env.SMTP_USER,pass:env.SMTP_PASS}});
 const emailResult=await transport.sendMail({from:env.MAIL_FROM,to:'business@hablemos30min.online',subject:'Verificación de correo Hablemos30min',text:'La app Hablemos30min ha verificado su correo de notificaciones. Este mensaje es una prueba de configuración; no corresponde a una reserva ni a un cobro.'});
 console.log('SMTP test accepted',emailResult.accepted.includes('business@hablemos30min.online'));transport.close();

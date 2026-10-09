@@ -21,13 +21,15 @@ GET `/api/availability?month=YYYY-MM&timezone=IANA`: `{slots:string[], settings:
 POST `/api/checkout`: `{name,email,phone,callChannel,topic,notes,startAt,timezone,acceptedPolicy:true,idempotencyKey:UUID}` -> `{url}`.
 GET `/api/booking?session_id=...`: verificación Stripe del servidor -> `{status,booking:{id,name,startAt,timezone,meetingType,meetingUrl,phone}}` (sin exponer otras reservas).
 POST `/api/webhooks/stripe`: firma obligatoria, cumplimiento idempotente.
-GET `/api/cron`: autenticación CRON_SECRET, procesamiento de cola y recordatorios.
+GET `/api/cron`: 410; no conecta a PostgreSQL. No hay cron programado.
 Admin: sesión HttpOnly, protección origen, disponibilidad, reservas, comunicaciones y auditoría.
 
 ## Operación
 30 minutos, 49 USD fijo, pago único, sin reembolsos. Reservas habilitadas con horario confirmado: L-V 09:00-20:00, sábado 11:00-16:00, domingo cerrado, America/New_York (Miami). Cliente elige WhatsApp o llamada; anfitrión +1 979 730 1283. Contacto y avisos administrativos: business@hablemos30min.online. Emisor SMTP: reservas@hablemos30min.online.
 
-Producción: https://hablemos30min.online, proyecto Vercel `hablemos30min` dentro del equipo `telegram-bots-projects-871f5ac8`. Neon independiente. Cron cada cinco minutos. Consulta `OPERATIONS.md` y `VERIFICATION.md` para operación y límites de las pruebas.
+Producción: https://hablemos30min.online, proyecto Vercel `hablemos30min` dentro del equipo `telegram-bots-projects-871f5ac8`. Neon independiente en la organización gratuita Yankiel Deniel, proyecto `calm-shape-51914969`, cómputo limitado a 0,25 CU. Sin cron. Consulta `OPERATIONS.md` y `VERIFICATION.md` para operación y límites de las pruebas.
+
+`lib/public-agenda.ts` mantiene una sola instantánea de configuración y ocupación con Data Cache de Next.js, sin caducidad temporal. `lib/public-agenda-service.ts` calcula mes, zona horaria y anticipación en cada solicitud sin consultar PostgreSQL. Reservas, modificaciones administrativas y expiraciones verificadas actualizan la caché inmediatamente. El checkout conserva validación y exclusión PostgreSQL. La caché puede requerir una lectura inicial si está vacía o fue desalojada. `DATABASE_MAINTENANCE=1` impide accesos de la aplicación a la base durante migraciones.
 
 Repositorio público: https://github.com/YankielDBC2/hablemos30min, licencia MIT y rama `main`. El repositorio está conectado al proyecto existente de Vercel; los cambios en `main` se publican mediante la integración Git. Credenciales y recibos continúan excluidos de Git.
 

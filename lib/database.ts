@@ -2,6 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { AppError } from "./errors";
 
 export async function query<T extends Record<string,unknown> = Record<string,unknown>>(statement:string,params:unknown[]=[]):Promise<T[]> {
+  if(process.env.DATABASE_MAINTENANCE==='1') throw new AppError('El sistema de reservas está en mantenimiento. Inténtalo en unos minutos.',503,'MAINTENANCE');
   if(!process.env.DATABASE_URL) throw new AppError("El servicio de reservas aún no está configurado",503,"NOT_CONFIGURED");
   try {
     const sql=neon(process.env.DATABASE_URL);

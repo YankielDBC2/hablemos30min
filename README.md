@@ -44,9 +44,12 @@ La prueba de concurrencia PostgreSQL es opcional y requiere `TEST_DATABASE_URL` 
 - `STRIPE_SECRET_KEY` y `STRIPE_WEBHOOK_SECRET`: credenciales propias; registra `/api/webhooks/stripe` para `checkout.session.completed` y `checkout.session.async_payment_succeeded`.
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` y `MAIL_FROM`: cuenta SMTP para confirmación y recordatorios.
 - `ADMIN_PASSWORD_HASH`: formato `salthex:hashhex`, con hash generado por `crypto.scryptSync(contraseña, salthex, 64).toString('hex')`; almacena el hash, nunca la contraseña, en las variables de la aplicación.
-- `ADMIN_SESSION_SECRET` y `CRON_SECRET`: valores aleatorios distintos de al menos 32 caracteres.
+- `ADMIN_SESSION_SECRET`: valor aleatorio de al menos 32 caracteres.
+- `DATABASE_MAINTENANCE`: `1` durante una migración para impedir consultas y escrituras de la aplicación; `0` en operación normal.
 
-Para producción, configura las variables en Vercel y registra el cron autenticado de `vercel.json`. El intervalo de cinco minutos requiere un plan de Vercel que lo admita. Usa claves Stripe de prueba en tu entorno de desarrollo.
+Para producción, configura las variables en Vercel. No hay cron ni consultas periódicas: la agenda usa una caché persistente compartida, que se actualiza con cambios administrativos, reservas y expiraciones verificadas de Stripe. Un fallo o desalojo de caché puede requerir una lectura inicial. Stripe debe enviar también `checkout.session.expired`. Usa claves Stripe de prueba en tu entorno de desarrollo.
+
+Las confirmaciones se envían al verificar el pago. Los correos pendientes y la conciliación se procesan al abrir el admin o ante un evento de pago. Sin un programador periódico, los recordatorios por correo no se envían de forma autónoma a la hora prevista; el archivo ICS incluye avisos de calendario 24 horas y una hora antes.
 
 Los scripts de operaciones en `scripts/` que usan `.private/` están ligados a la instalación original. Revísalos antes de usarlos con otras cuentas o dominios; no son pasos necesarios de instalación.
 

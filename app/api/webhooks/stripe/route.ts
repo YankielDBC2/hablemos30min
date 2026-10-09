@@ -1,5 +1,5 @@
 import { stripeClient } from '@/lib/stripe';
-import { fulfillCheckout,processNotifications } from '@/lib/services';
+import { fulfillCheckout,processNotifications,expireCheckout } from '@/lib/services';
 import { json,handleError } from '@/lib/http';
 export const runtime='nodejs';
 export const maxDuration=60;
@@ -14,6 +14,7 @@ export async function POST(request:Request){
    await fulfillCheckout(event.data.object.id);
    await processNotifications();
   }
+  if(event.type==='checkout.session.expired') await expireCheckout(event.data.object.id);
   return json({received:true});
  }catch(e){return handleError(e);}
 }

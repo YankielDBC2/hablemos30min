@@ -10,6 +10,20 @@ export interface PaymentPorts {
  markPaymentReview:(id:string)=>Promise<void>;
  confirmPaid:(id:string,sessionId:string)=>Promise<Booking>;
 }
+export interface ExpirationPorts {
+ retrieve:(id:string)=>Promise<Stripe.Checkout.Session>;
+ findBySession:(id:string)=>Promise<Booking|null>;
+ expireVerifiedHold:(id:string)=>Promise<void>;
+}
+export async function expireUnpaidCheckout(sessionId:string,ports:ExpirationPorts):Promise<boolean> {
+ if(!/^cs_(test_|live_)?[A-Za-z0-9]+$/.test(sessionId)) throw new AppError("Referencia de pago inválida");
+ const session=await ports.retrieve(sessionId);
+ if(session.status!=="expired" || session.payment_status!=="unpaid") return false;
+ const booking=await ports.findBySession(sessionId);
+ if(!booking || booking.status!=="held" || booking.paymentStatus!=="unpaid" || booking.stripeSessionId!==sessionId) return false;
+ await ports.expireVerifiedHold(booking.id);
+ return true;
+}
 export async function fulfillPayment(sessionId:string,ports:PaymentPorts):Promise<Booking|null> {
  if(!/^cs_(test_|live_)?[A-Za-z0-9]+$/.test(sessionId)) throw new AppError("Referencia de pago inválida");
  const session=await ports.retrieve(sessionId);
